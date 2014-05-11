@@ -25,7 +25,7 @@ func connect() {
 		options.Server.Port))
 
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 }
 

@@ -31,7 +31,7 @@ func (o *Options) read() {
 	err := gcfg.ReadFileInto(o, CONFIG_FILE)
 
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 
 }
