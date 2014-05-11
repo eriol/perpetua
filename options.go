@@ -13,6 +13,7 @@ const DEFAULT_USER = "perpetua"
 
 var BASE_DIR = filepath.Join(os.ExpandEnv("$HOME"), ".perpetua")
 var CONFIG_FILE = filepath.Join(BASE_DIR, "perpetua.gcfg")
+var DATABASE_FILE = filepath.Join(BASE_DIR, "perpetua.sqlite3")
 
 type Options struct {
 	Server struct {
