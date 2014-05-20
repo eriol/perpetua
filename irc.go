@@ -31,10 +31,15 @@ func connect() {
 
 func handleEvents() {
 	connection.AddCallback("001", doWelcome)
+	connection.AddCallback("JOIN", doJoin)
 }
 
 func doWelcome(event *irc.Event) {
 	connection.Join("#" + options.IRC.Channel)
+}
+
+func doJoin(event *irc.Event) {
+	connection.Privmsg(event.Arguments[0], "Hello! I'm "+version)
 }
 
 func startIRC() {
