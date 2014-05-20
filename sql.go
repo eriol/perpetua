@@ -11,8 +11,8 @@ type Store struct {
 	db *sql.DB
 }
 
-func (s *Store) open() {
-	db, err := sql.Open("sqlite3", DATABASE_FILE)
+func (s *Store) open(database string) {
+	db, err := sql.Open("sqlite3", database)
 	if err != nil {
 		log.Fatal(err)
 	}
