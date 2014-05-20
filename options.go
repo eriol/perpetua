@@ -35,5 +35,3 @@ func (o *Options) read() {
 	}
 
 }
-
-var options Options

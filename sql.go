@@ -40,7 +40,4 @@ func (s *Store) createDatabase() {
 	`
 	s.db.Exec(sql_people_table)
 	s.db.Exec(sql_quotes_table)
-
 }
-
-var store Store
