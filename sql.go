@@ -3,6 +3,7 @@ package perpetua
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,6 +18,12 @@ func (s *Store) open(database string) {
 		log.Fatal(err)
 	}
 	s.db = db
+
+	if _, err := os.Stat(database); err != nil {
+		if os.IsNotExist(err) {
+			s.createDatabase()
+		}
+	}
 }
 
 func (s *Store) close() {
