@@ -14,7 +14,7 @@ func main() {
 	options.Read()
 
 	store.Open(config.DATABASE_FILE)
-	// defer store.Close()
+	defer store.Close()
 
 	irc.Client(&options, &store)
 
