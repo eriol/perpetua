@@ -54,8 +54,7 @@ func doPrivmsg(event *irc.Event) {
 	command, person := parseMessage(event.Message())
 
 	if command != "" && person != "" {
-
-		fmt.Println(person)
+		connection.Privmsg(event.Arguments[0], store.getQuote(person))
 	}
 }
 
