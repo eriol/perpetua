@@ -36,19 +36,19 @@ func (s *Store) createDatabase() {
 	// be supported see https://github.com/mattn/go-sqlite3/issues/60
 	sql_people_table := `CREATE TABLE people (
 	id INTEGER NOT NULL PRIMARY KEY autoincrement,
-	name TEXT
+	name TEXT COLLATE NOCASE
 );`
 
 	sql_quotes_table := `CREATE TABLE quotes (
 	id INTEGER NOT NULL PRIMARY KEY autoincrement,
 	person_id INTEGER NOT NULL,
-	quote TEXT,
+	quote TEXT COLLATE NOCASE,
 	FOREIGN KEY(person_id) REFERENCES people(id)
 );`
 
 	sql_alias_table := `CREATE TABLE alias (
 	person_id INTEGER NOT NULL,
-	alias TEXT,
+	alias TEXT COLLATE NOCASE,
 	FOREIGN KEY(person_id) REFERENCES people(id)
 );`
 
