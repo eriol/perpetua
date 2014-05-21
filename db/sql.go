@@ -40,6 +40,7 @@ func (s *Store) createDatabase() {
 );
 	`
 	sql_quotes_table := `CREATE TABLE quotes (
+	id INTEGER NOT NULL PRIMARY KEY autoincrement,
 	person_id INTEGER NOT NULL,
 	quote TEXT,
 	FOREIGN KEY(person_id) REFERENCES people(id)
