@@ -41,3 +41,11 @@ func (s *Store) createDatabase() {
 	s.db.Exec(sql_people_table)
 	s.db.Exec(sql_quotes_table)
 }
+
+func (s *Store) getQuote(person string) (quote string) {
+	var q string
+	query := `SELECT quote FROM quotes WHERE person_id =
+		(SELECT id FROM people WHERE name = ?) ORDER BY RANDOM() LIMIT 1;`
+	s.db.QueryRow(query, person).Scan(&q)
+	return q
+}
