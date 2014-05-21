@@ -1,15 +1,21 @@
-package perpetua
+package main
 
-var options Options
-var store Store
+import (
+	"hg.mornie.org/perpetua/config"
+	"hg.mornie.org/perpetua/db"
+	"hg.mornie.org/perpetua/irc"
+)
 
-func Start() {
+func main() {
 
-	options.read()
+	var options config.Options
+	var store db.Store
 
-	store.open(DATABASE_FILE)
-	defer store.close()
+	options.Read()
 
-	startIRC()
+	store.Open(config.DATABASE_FILE)
+	// defer store.Close()
+
+	irc.Client(&options, &store)
 
 }

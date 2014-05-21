@@ -1,4 +1,4 @@
-package perpetua
+package irc
 
 import (
 	"crypto/tls"
@@ -7,11 +7,16 @@ import (
 	"regexp"
 
 	"github.com/thoj/go-ircevent"
+
+	"hg.mornie.org/perpetua/config"
+	"hg.mornie.org/perpetua/db"
 )
 
 const version = "perpetua quote bot v0.1a"
 
 var connection *irc.Connection
+var options *config.Options
+var store *db.Store
 
 func connect() {
 	connection = irc.IRC(options.IRC.Nickname, options.IRC.User)
@@ -54,7 +59,7 @@ func doPrivmsg(event *irc.Event) {
 	command, person := parseMessage(event.Message())
 
 	if command != "" && person != "" {
-		connection.Privmsg(event.Arguments[0], store.getQuote(person))
+		connection.Privmsg(event.Arguments[0], store.GetQuote(person))
 	}
 }
 
@@ -77,7 +82,9 @@ func parseMessage(message string) (command, person string) {
 	return md["command"], md["person"]
 }
 
-func startIRC() {
+func Client(opt *config.Options, db *db.Store) {
+	options = opt
+	store = db
 	connect()
 	handleEvents()
 	connection.Loop()

@@ -1,4 +1,4 @@
-package perpetua
+package config
 
 import (
 	"log"
@@ -26,7 +26,7 @@ type Options struct {
 	}
 }
 
-func (o *Options) read() {
+func (o *Options) Read() {
 
 	err := gcfg.ReadFileInto(o, CONFIG_FILE)
 

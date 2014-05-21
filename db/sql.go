@@ -1,4 +1,4 @@
-package perpetua
+package db
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ type Store struct {
 	db *sql.DB
 }
 
-func (s *Store) open(database string) {
+func (s *Store) Open(database string) {
 	db, err := sql.Open("sqlite3", database)
 	if err != nil {
 		log.Fatal(err)
@@ -26,7 +26,7 @@ func (s *Store) open(database string) {
 	}
 }
 
-func (s *Store) close() {
+func (s *Store) Close() {
 	s.db.Close()
 }
 
@@ -49,7 +49,7 @@ func (s *Store) createDatabase() {
 	s.db.Exec(sql_quotes_table)
 }
 
-func (s *Store) getQuote(person string) (quote string) {
+func (s *Store) GetQuote(person string) (quote string) {
 	var q string
 	query := `SELECT quote FROM quotes WHERE person_id =
 		(SELECT id FROM people WHERE name = ?) ORDER BY RANDOM() LIMIT 1;`
