@@ -71,7 +71,6 @@ func doPrivmsg(event *irc.Event) {
 	if command != "" && person != "" {
 
 		if extra != "" && argument != "" {
-			fmt.Println("argument")
 			connection.Privmsg(event.Arguments[0],
 				store.GetQuoteAbout(person, argument))
 			return
