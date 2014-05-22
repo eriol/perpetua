@@ -2,8 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -70,9 +72,22 @@ func (s *Store) getPerson(name string) (id int) {
 }
 
 func (s *Store) GetQuote(person string) (quote string) {
-	var q string
 	query := `SELECT quote FROM quotes WHERE person_id = ?
 		ORDER BY RANDOM() LIMIT 1;`
-	s.db.QueryRow(query, s.getPerson(person)).Scan(&q)
-	return q
+	s.db.QueryRow(query, s.getPerson(person)).Scan(&quote)
+	return quote
+}
+
+func (s *Store) GetQuoteAbout(person, argument string) (quote string) {
+	// A double quote can't be present in argument because of the
+	// regex used but removing anyway
+	argument = strings.Replace(argument, "\"", "", -1)
+
+	query := "SELECT quote FROM quotes WHERE person_id = ? " +
+		"AND quote LIKE \"%%%s%%\" " +
+		"ORDER BY RANDOM() LIMIT 1;"
+	query = fmt.Sprintf(query, argument)
+
+	s.db.QueryRow(query, s.getPerson(person)).Scan(&quote)
+	return quote
 }
