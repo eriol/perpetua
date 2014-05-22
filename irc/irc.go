@@ -66,30 +66,56 @@ func doPrivmsg(event *irc.Event) {
 	if channel == options.IRC.Nickname {
 		return
 	}
-	command, person := parseMessage(event.Message())
+	command, person, extra, argument := parseMessage(event.Message())
 
 	if command != "" && person != "" {
+
+		if extra != "" && argument != "" {
+			fmt.Println("argument")
+			connection.Privmsg(event.Arguments[0],
+				store.GetQuoteAbout(person, argument))
+			return
+		}
 		connection.Privmsg(event.Arguments[0], store.GetQuote(person))
 	}
 }
 
-func parseMessage(message string) (command, person string) {
+func parseMessage(message string) (command, person, extra, argument string) {
+	var names []string
+
+	reArgument := regexp.MustCompile(options.IRC.Nickname +
+		`:?` +
+		`\s+` +
+		`(?P<command>cita|cosa dice|quote|what does it say)` +
+		`\s+` +
+		`(?P<person>[\w\s-'\p{Latin}]+)` +
+		`(?:\s+)` +
+		`(?P<extra>su|about)` +
+		`(?:\s+)` +
+		`(?P<argument>[\w\s-'\p{Latin}]+)`)
 
 	re := regexp.MustCompile(options.IRC.Nickname +
 		`:?` +
-		`\s*` +
+		`\s+` +
 		`(?P<command>cita|cosa dice|quote|what does it say)` +
-		`\s*(?P<person>[\w\s-'\p{Latin}]+)`)
+		`\s+` +
+		`(?P<person>[\w\s-'\p{Latin}]+)`)
 
-	res := re.FindStringSubmatch(message)
+	res := reArgument.FindStringSubmatch(message)
 
-	names := re.SubexpNames()
+	if res == nil {
+		res = re.FindStringSubmatch(message)
+		names = re.SubexpNames()
+	} else {
+		names = reArgument.SubexpNames()
+	}
+
 	md := map[string]string{}
 	for i, n := range res {
 		md[names[i]] = n
 	}
 
-	return md["command"], md["person"]
+	return md["command"], md["person"], md["extra"], md["argument"]
 }
 
 func Client(opt *config.Options, db *db.Store) {
