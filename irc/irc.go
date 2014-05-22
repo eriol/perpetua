@@ -78,7 +78,7 @@ func parseMessage(message string) (command, person string) {
 		`:?` +
 		`\s*` +
 		`(?P<command>cita|cosa dice|quote|what does it say)` +
-		`\s*(?P<person>[\w\s-']+)`)
+		`\s*(?P<person>[\w\s-'\p{Latin}]+)`)
 
 	res := re.FindStringSubmatch(message)
 
