@@ -32,6 +32,13 @@ func (o *Options) Read() {
 
 	err := gcfg.ReadFileInto(o, CONFIG_FILE)
 
+	if o.IRC.Nickname == "" {
+		o.IRC.Nickname = DEFAULT_NICKNAME
+	}
+	if o.IRC.User == "" {
+		o.IRC.User = DEFAULT_USER
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	}
