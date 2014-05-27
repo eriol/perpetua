@@ -8,6 +8,8 @@ import (
 	"code.google.com/p/gcfg"
 )
 
+const Version = "0.1a"
+
 const DEFAULT_NICKNAME = "perpetua"
 const DEFAULT_USER = "perpetua"
 

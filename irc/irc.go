@@ -12,7 +12,7 @@ import (
 	"hg.mornie.org/perpetua/db"
 )
 
-const version = "perpetua quote bot v0.1a"
+const version = "perpetua quote bot " + config.Version
 
 var connection *irc.Connection
 var options *config.Options
