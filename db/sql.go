@@ -54,9 +54,32 @@ func (s *Store) createDatabase() {
 	FOREIGN KEY(person_id) REFERENCES people(id)
 );`
 
-	s.db.Exec(sql_people_table)
-	s.db.Exec(sql_quotes_table)
-	s.db.Exec(sql_alias_table)
+	sql_channels_table := `CREATE TABLE channels (
+	id INTEGER NOT NULL PRIMARY KEY autoincrement,
+	name TEXT COLLATE NOCASE
+);`
+	// quotes_acl table connects a quote with a specific channel so
+	// that the quote will be quoted only in that specific channel.
+	// Quotes not present in this table are public (quoted in every
+	// channel where the bot joined)
+	sql_quotes_acl_table := `CREATE TABLE quotes_acl (
+	quote_id INTEGER NOT NULL,
+	channel_id INTEGER NOT NULL,
+	FOREIGN KEY(quote_id) REFERENCES quotes(id),
+	FOREIGN KEY(channel_id) REFERENCES channels(id)
+);`
+
+	tables := [5]string{
+		sql_people_table,
+		sql_quotes_table,
+		sql_alias_table,
+		sql_channels_table,
+		sql_quotes_acl_table,
+	}
+
+	for _, table := range tables {
+		s.db.Exec(table)
+	}
 }
 
 func (s *Store) getPerson(name string) (id int) {
