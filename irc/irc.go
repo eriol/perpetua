@@ -42,8 +42,10 @@ func handleEvents() {
 }
 
 func doWelcome(event *irc.Event) {
-	connection.Join(options.IRC.Channel)
-	connection.Log.Println("Joined to " + options.IRC.Channel)
+	for _, channel := range options.IRC.Channel {
+		connection.Join(channel)
+		connection.Log.Println("Joined to " + channel)
+	}
 }
 
 func doJoin(event *irc.Event) {

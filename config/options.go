@@ -24,7 +24,8 @@ type Options struct {
 		UseTLS, SkipVerify bool
 	}
 	IRC struct {
-		Nickname, User, Channel string
+		Nickname, User string
+		Channel        []string
 	}
 }
 
