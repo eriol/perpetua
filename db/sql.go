@@ -94,23 +94,48 @@ func (s *Store) getPerson(name string) (id int) {
 	return
 }
 
-func (s *Store) GetQuote(person string) (quote string) {
-	query := `SELECT quote FROM quotes WHERE person_id = ?
-		ORDER BY RANDOM() LIMIT 1;`
-	s.db.QueryRow(query, s.getPerson(person)).Scan(&quote)
-	return quote
+func (s *Store) getChannel(name string) (id int) {
+	query := `SELECT id FROM channels WHERE name = ?`
+
+	s.db.QueryRow(query, name).Scan(&id)
+
+	return
 }
 
-func (s *Store) GetQuoteAbout(person, argument string) (quote string) {
+func (s *Store) GetQuote(person, channel string) (quote string) {
+	query := `SELECT quote FROM quotes WHERE person_id = ?
+		AND id NOT IN (
+			SELECT quote_id FROM quotes_acl
+			EXCEPT
+			SELECT quote_id FROM quotes_acl WHERE channel_id = ?)
+		ORDER BY RANDOM() LIMIT 1;`
+
+	s.db.QueryRow(
+		query,
+		s.getPerson(person),
+		s.getChannel(channel)).Scan(&quote)
+
+	return
+}
+
+func (s *Store) GetQuoteAbout(person, argument, channel string) (quote string) {
 	// A double quote can't be present in argument because of the
 	// regex used but removing anyway
 	argument = strings.Replace(argument, "\"", "", -1)
 
 	query := "SELECT quote FROM quotes WHERE person_id = ? " +
 		"AND quote LIKE \"%%%s%%\" " +
+		"AND id NOT IN ( " +
+		"SELECT quote_id FROM quotes_acl " +
+		"EXCEPT " +
+		"SELECT quote_id FROM quotes_acl WHERE channel_id = ?) " +
 		"ORDER BY RANDOM() LIMIT 1;"
 	query = fmt.Sprintf(query, argument)
 
-	s.db.QueryRow(query, s.getPerson(person)).Scan(&quote)
-	return quote
+	s.db.QueryRow(
+		query,
+		s.getPerson(person),
+		s.getChannel(channel)).Scan(&quote)
+
+	return
 }
