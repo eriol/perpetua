@@ -73,11 +73,10 @@ func doPrivmsg(event *irc.Event) {
 	if command != "" && person != "" {
 
 		if extra != "" && argument != "" {
-			connection.Privmsg(event.Arguments[0],
-				store.GetQuoteAbout(person, argument))
+			connection.Privmsg(channel, store.GetQuoteAbout(person, argument))
 			return
 		}
-		connection.Privmsg(event.Arguments[0], store.GetQuote(person))
+		connection.Privmsg(channel, store.GetQuote(person))
 	}
 }
 
