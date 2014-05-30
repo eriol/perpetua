@@ -63,6 +63,7 @@ func doJoin(event *irc.Event) {
 
 func doPrivmsg(event *irc.Event) {
 	channel := event.Arguments[0]
+	var quote string
 
 	// Don't speak in private!
 	if channel == options.IRC.Nickname {
@@ -72,11 +73,13 @@ func doPrivmsg(event *irc.Event) {
 
 	if command != "" && person != "" {
 
+		quote = store.GetQuote(person)
+
 		if extra != "" && argument != "" {
-			connection.Privmsg(channel, store.GetQuoteAbout(person, argument))
-			return
+			quote = store.GetQuoteAbout(person, argument)
 		}
-		connection.Privmsg(channel, store.GetQuote(person))
+
+		connection.Privmsg(channel, quote)
 	}
 }
 
