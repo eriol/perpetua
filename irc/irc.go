@@ -49,12 +49,12 @@ func doWelcome(event *irc.Event) {
 }
 
 func doJoin(event *irc.Event) {
+	channel := event.Arguments[0]
 
 	if event.Nick == options.IRC.Nickname {
-		connection.Privmsg(event.Arguments[0], "Hello! I'm "+version)
+		connection.Privmsg(channel, "Hello! I'm "+version)
 	} else {
-
-		connection.Privmsg(event.Arguments[0],
+		connection.Privmsg(channel,
 			fmt.Sprintf("Hello %s! I'm %s. Do you want a quote?",
 				event.Nick,
 				version))
