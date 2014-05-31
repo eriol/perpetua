@@ -10,6 +10,8 @@ import (
 
 const Version = "0.1a"
 
+const DEFAULT_LANG = "en"
+
 const DEFAULT_NICKNAME = "perpetua"
 const DEFAULT_USER = "perpetua"
 
@@ -17,6 +19,7 @@ var BASE_DIR = filepath.Join(os.ExpandEnv("$HOME"), ".perpetua")
 var CONFIG_FILE = filepath.Join(BASE_DIR, "perpetua.gcfg")
 var DATABASE_FILE = filepath.Join(BASE_DIR, "perpetua.sqlite3")
 
+// Options is used by Gcfg to store data read from CONFIG_FILE.
 type Options struct {
 	Server struct {
 		Hostname           string
@@ -27,11 +30,20 @@ type Options struct {
 		Nickname, User string
 		Channel        []string
 	}
+	I18N struct {
+		Lang string
+	}
 }
 
+// Read configuration from default config file specified by
+// CONFIG_FILE and set default values for not provided entries.
 func (o *Options) Read() {
 
 	err := gcfg.ReadFileInto(o, CONFIG_FILE)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if o.IRC.Nickname == "" {
 		o.IRC.Nickname = DEFAULT_NICKNAME
@@ -40,8 +52,8 @@ func (o *Options) Read() {
 		o.IRC.User = DEFAULT_USER
 	}
 
-	if err != nil {
-		log.Fatal(err)
+	if o.I18N.Lang == "" {
+		o.I18N.Lang = DEFAULT_LANG
 	}
 
 }
