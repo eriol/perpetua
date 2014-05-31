@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strings"
 
 	"github.com/thoj/go-ircevent"
 
@@ -17,6 +18,36 @@ const version = "perpetua quote bot " + config.Version
 var connection *irc.Connection
 var options *config.Options
 var store *db.Store
+
+// Localizated quote and about tokens used to detect the kind of query for
+// the bot.
+var i18n = map[string]map[string][]string{
+	"en": map[string][]string{
+		"quote": []string{"quote", "what does it say"},
+		"about": []string{"about"},
+	},
+	"it": map[string][]string{
+		"quote": []string{
+			"cita",
+			"che dice",
+			"cosa dice",
+			"che cosa dice"},
+		"about": []string{
+			"su",
+			"sul",
+			"sulla",
+			"sullo",
+			"sui",
+			"sugli",
+			"sulle"},
+	},
+}
+
+// Join keys from i18n using "|": used inside the regex to perform an
+// OR of all keys.
+func i18nKeyJoin(lang, key string) string {
+	return strings.Join(i18n[lang][key], "|")
+}
 
 func connect() {
 	connection = irc.IRC(options.IRC.Nickname, options.IRC.User)
@@ -85,22 +116,23 @@ func doPrivmsg(event *irc.Event) {
 
 func parseMessage(message string) (command, person, extra, argument string) {
 	var names []string
+	lang := options.I18N.Lang
 
 	reArgument := regexp.MustCompile(options.IRC.Nickname +
 		`:?` +
 		`\s+` +
-		`(?P<command>cita|cosa dice|quote|what does it say)` +
+		`(?P<command>` + i18nKeyJoin(lang, "quote") + `)` +
 		`\s+` +
 		`(?P<person>[\w\s-'\p{Latin}]+)` +
 		`(?:\s+)` +
-		`(?P<extra>su|about)` +
+		`(?P<extra>` + i18nKeyJoin(lang, "about") + `)` +
 		`(?:\s+)` +
 		`(?P<argument>[\w\s-'\p{Latin}]+)`)
 
 	re := regexp.MustCompile(options.IRC.Nickname +
 		`:?` +
 		`\s+` +
-		`(?P<command>cita|cosa dice|quote|what does it say)` +
+		`(?P<command>` + i18nKeyJoin(lang, "quote") + `)` +
 		`\s+` +
 		`(?P<person>[\w\s-'\p{Latin}]+)`)
 
@@ -113,12 +145,12 @@ func parseMessage(message string) (command, person, extra, argument string) {
 		names = reArgument.SubexpNames()
 	}
 
-	md := map[string]string{}
+	m := map[string]string{}
 	for i, n := range res {
-		md[names[i]] = n
+		m[names[i]] = n
 	}
 
-	return md["command"], md["person"], md["extra"], md["argument"]
+	return m["command"], m["person"], m["extra"], m["argument"]
 }
 
 func Client(opt *config.Options, db *db.Store) {
