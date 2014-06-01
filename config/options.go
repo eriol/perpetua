@@ -61,4 +61,15 @@ func (o *Options) Read() {
 		o.I18N.Lang = DEFAULT_LANG
 	}
 
+	// Add a # at the beginning of the channel name if it's not there yet.
+	// gcfg use # for comments so if you want to insert a # you must enclose
+	// channel inside double quote marks.
+	for i, channel := range o.IRC.Channel {
+		if string(channel[0]) == "#" {
+			continue
+		} else {
+			o.IRC.Channel[i] = "#" + channel
+		}
+	}
+
 }
