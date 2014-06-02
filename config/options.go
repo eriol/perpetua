@@ -42,7 +42,6 @@ type Options struct {
 
 // Read configuration from file specified by configFile and use
 // the default config file CONFIG_FILE if configFile is empty.
-// Set default values for not provided entries.
 func (o *Options) Read(configFile string) {
 
 	if configFile == "" {
@@ -54,6 +53,12 @@ func (o *Options) Read(configFile string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	o.setDefaultValues()
+}
+
+// Set default values for not provided entries.
+func (o *Options) setDefaultValues() {
 
 	if o.IRC.Nickname == "" {
 		o.IRC.Nickname = DEFAULT_NICKNAME
