@@ -16,7 +16,8 @@ func main() {
 	var options config.Options
 	var store db.Store
 
-	options.Read()
+	// TODO add a command line option to specify a config file
+	options.Read("")
 
 	store.Open(config.DATABASE_FILE)
 	defer store.Close()
