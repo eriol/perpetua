@@ -24,7 +24,7 @@ var BASE_DIR = filepath.Join(os.ExpandEnv("$HOME"), ".perpetua")
 var CONFIG_FILE = filepath.Join(BASE_DIR, "perpetua.gcfg")
 var DATABASE_FILE = filepath.Join(BASE_DIR, "perpetua.sqlite3")
 
-// Options is used by Gcfg to store data read from CONFIG_FILE.
+// Options is used by Gcfg to store data read from CONFIG_FILE or a string.
 type Options struct {
 	Server struct {
 		Hostname           string
@@ -49,6 +49,18 @@ func (o *Options) Read(configFile string) {
 	}
 
 	err := gcfg.ReadFileInto(o, configFile)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	o.setDefaultValues()
+}
+
+// Read configuration from string.
+func (o *Options) ReadFromString(config string) {
+
+	err := gcfg.ReadStringInto(o, config)
 
 	if err != nil {
 		log.Fatal(err)
