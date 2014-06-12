@@ -39,6 +39,7 @@ func fixture(databaseName string) {
 func TestQuote(t *testing.T) {
 	var s Store
 	var quote string
+	var id int
 
 	dirName, err := ioutil.TempDir("", "perpetua")
 	if err != nil {
@@ -55,6 +56,16 @@ func TestQuote(t *testing.T) {
 	defer s.Close()
 
 	fixture(databaseName)
+
+	id = s.getPerson("the fox")
+	if id != 1 {
+		t.Fatal("Person id does not match!")
+	}
+
+	id = s.getChannel("#test2")
+	if id != 2 {
+		t.Fatal("Channel id does not match!")
+	}
 
 	// GetQuote tests
 
