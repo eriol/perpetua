@@ -62,6 +62,12 @@ func TestQuote(t *testing.T) {
 		t.Fatal("Person id does not match!")
 	}
 
+	// Person search is case insensitive
+	id = s.getPerson("ThE fOx")
+	if id != 1 {
+		t.Fatal("Person id does not match!")
+	}
+
 	id = s.getChannel("#test2")
 	if id != 2 {
 		t.Fatal("Channel id does not match!")
