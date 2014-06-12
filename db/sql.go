@@ -19,7 +19,7 @@ type Store struct {
 	db *sql.DB
 }
 
-func (s *Store) Open(database string) {
+func (s *Store) Open(database string) error {
 	db, err := sql.Open("sqlite3", database)
 	if err != nil {
 		log.Fatal(err)
@@ -31,6 +31,8 @@ func (s *Store) Open(database string) {
 			s.createDatabase()
 		}
 	}
+
+	return nil
 }
 
 func (s *Store) Close() {
@@ -83,7 +85,11 @@ func (s *Store) createDatabase() {
 	}
 
 	for _, table := range tables {
-		s.db.Exec(table)
+		_, err := s.db.Exec(table)
+
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
