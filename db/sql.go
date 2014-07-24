@@ -41,55 +41,45 @@ func (s *Store) Close() {
 
 func (s *Store) createDatabase() {
 
-	// TODO: create all tables in one variable when multiple statements will
-	// be supported see https://github.com/mattn/go-sqlite3/issues/60
-	sql_people_table := `CREATE TABLE people (
-	id INTEGER NOT NULL PRIMARY KEY autoincrement,
-	name TEXT COLLATE NOCASE
-);`
-
-	sql_quotes_table := `CREATE TABLE quotes (
-	id INTEGER NOT NULL PRIMARY KEY autoincrement,
-	person_id INTEGER NOT NULL,
-	quote TEXT COLLATE NOCASE,
-	FOREIGN KEY(person_id) REFERENCES people(id)
-);`
-
-	sql_alias_table := `CREATE TABLE alias (
-	person_id INTEGER NOT NULL,
-	alias TEXT COLLATE NOCASE,
-	FOREIGN KEY(person_id) REFERENCES people(id)
-);`
-
-	sql_channels_table := `CREATE TABLE channels (
-	id INTEGER NOT NULL PRIMARY KEY autoincrement,
-	name TEXT COLLATE NOCASE
-);`
 	// quotes_acl table connects a quote with a specific channel so
 	// that the quote will be quoted only in that specific channel.
 	// Quotes not present in this table are public (quoted in every
 	// channel where the bot joined)
-	sql_quotes_acl_table := `CREATE TABLE quotes_acl (
-	quote_id INTEGER NOT NULL,
-	channel_id INTEGER NOT NULL,
-	FOREIGN KEY(quote_id) REFERENCES quotes(id),
-	FOREIGN KEY(channel_id) REFERENCES channels(id)
-);`
+	tables := `
+	CREATE TABLE people (
+	    id INTEGER NOT NULL PRIMARY KEY autoincrement,
+	    name TEXT COLLATE NOCASE
+	);
 
-	tables := [5]string{
-		sql_people_table,
-		sql_quotes_table,
-		sql_alias_table,
-		sql_channels_table,
-		sql_quotes_acl_table,
-	}
+	CREATE TABLE quotes (
+	    id INTEGER NOT NULL PRIMARY KEY autoincrement,
+	    person_id INTEGER NOT NULL,
+	    quote TEXT COLLATE NOCASE,
+	    FOREIGN KEY(person_id) REFERENCES people(id)
+	);
 
-	for _, table := range tables {
-		_, err := s.db.Exec(table)
+	CREATE TABLE alias (
+	    person_id INTEGER NOT NULL,
+	    alias TEXT COLLATE NOCASE,
+	    FOREIGN KEY(person_id) REFERENCES people(id)
+    );
 
-		if err != nil {
-			log.Fatal(err)
-		}
+	CREATE TABLE channels (
+	    id INTEGER NOT NULL PRIMARY KEY autoincrement,
+	    name TEXT COLLATE NOCASE
+	);
+
+	CREATE TABLE quotes_acl (
+	    quote_id INTEGER NOT NULL,
+	    channel_id INTEGER NOT NULL,
+	    FOREIGN KEY(quote_id) REFERENCES quotes(id),
+	    FOREIGN KEY(channel_id) REFERENCES channels(id)
+	);`
+
+	_, err := s.db.Exec(tables)
+
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
