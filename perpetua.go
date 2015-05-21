@@ -6,9 +6,9 @@
 package main
 
 import (
-	"hg.mornie.org/perpetua/config"
-	"hg.mornie.org/perpetua/db"
-	"hg.mornie.org/perpetua/irc"
+	"eriol.xyz/perpetua/config"
+	"eriol.xyz/perpetua/db"
+	"eriol.xyz/perpetua/irc"
 )
 
 func main() {

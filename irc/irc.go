@@ -14,8 +14,8 @@ import (
 
 	"github.com/thoj/go-ircevent"
 
-	"hg.mornie.org/perpetua/config"
-	"hg.mornie.org/perpetua/db"
+	"eriol.xyz/perpetua/config"
+	"eriol.xyz/perpetua/db"
 )
 
 const version = "perpetua quote bot " + config.Version
