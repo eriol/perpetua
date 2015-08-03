@@ -13,16 +13,18 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-const Version = "0.1a"
+const (
+	DEFAULT_LANG     = "en"
+	DEFAULT_NICKNAME = "perpetua"
+	DEFAULT_USER     = "perpetua"
+	Version          = "0.1a"
+)
 
-const DEFAULT_LANG = "en"
-
-const DEFAULT_NICKNAME = "perpetua"
-const DEFAULT_USER = "perpetua"
-
-var BASE_DIR = path.Join(os.ExpandEnv("$HOME"), ".perpetua")
-var CONFIG_FILE = path.Join(BASE_DIR, "perpetua.toml")
-var DATABASE_FILE = path.Join(BASE_DIR, "perpetua.sqlite3")
+var (
+	BASE_DIR      = path.Join(os.ExpandEnv("$HOME"), ".perpetua")
+	CONFIG_FILE   = path.Join(BASE_DIR, "perpetua.toml")
+	DATABASE_FILE = path.Join(BASE_DIR, "perpetua.sqlite3")
+)
 
 // Options is used to store data read from CONFIG_FILE or a string.
 type Options struct {
