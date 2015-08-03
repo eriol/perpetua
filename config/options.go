@@ -10,7 +10,7 @@ import (
 	"os"
 	"path"
 
-	"code.google.com/p/gcfg"
+	"github.com/BurntSushi/toml"
 )
 
 const Version = "0.1a"
@@ -21,10 +21,10 @@ const DEFAULT_NICKNAME = "perpetua"
 const DEFAULT_USER = "perpetua"
 
 var BASE_DIR = path.Join(os.ExpandEnv("$HOME"), ".perpetua")
-var CONFIG_FILE = path.Join(BASE_DIR, "perpetua.gcfg")
+var CONFIG_FILE = path.Join(BASE_DIR, "perpetua.toml")
 var DATABASE_FILE = path.Join(BASE_DIR, "perpetua.sqlite3")
 
-// Options is used by Gcfg to store data read from CONFIG_FILE or a string.
+// Options is used to store data read from CONFIG_FILE or a string.
 type Options struct {
 	Server struct {
 		Hostname           string
@@ -33,7 +33,7 @@ type Options struct {
 	}
 	IRC struct {
 		Nickname, User string
-		Channel        []string
+		Channels       []string
 	}
 	I18N struct {
 		Lang string
@@ -48,9 +48,7 @@ func (o *Options) Read(configFile string) {
 		configFile = CONFIG_FILE
 	}
 
-	err := gcfg.ReadFileInto(o, configFile)
-
-	if err != nil {
+	if _, err := toml.DecodeFile(configFile, o); err != nil {
 		log.Fatal(err)
 	}
 
@@ -60,9 +58,7 @@ func (o *Options) Read(configFile string) {
 // Read configuration from string.
 func (o *Options) ReadFromString(config string) {
 
-	err := gcfg.ReadStringInto(o, config)
-
-	if err != nil {
+	if _, err := toml.Decode(config, o); err != nil {
 		log.Fatal(err)
 	}
 
@@ -84,14 +80,11 @@ func (o *Options) setDefaultValues() {
 	}
 
 	// Add a # at the beginning of the channel name if it's not there yet.
-	// gcfg use # for comments so if you want to insert a # you must enclose
-	// channel inside double quote marks.
-	for i, channel := range o.IRC.Channel {
+	for i, channel := range o.IRC.Channels {
 		if string(channel[0]) == "#" {
 			continue
 		} else {
-			o.IRC.Channel[i] = "#" + channel
+			o.IRC.Channels[i] = "#" + channel
 		}
 	}
-
 }

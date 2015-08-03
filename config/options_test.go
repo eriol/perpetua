@@ -32,14 +32,13 @@ func TestChannels(t *testing.T) {
 
 	var option Options
 	cfg := `[IRC]
-	channel = channel1
-	channel = "#channel2"
+	channels = ["channel1", "#channel2"]
 	`
 
 	option.ReadFromString(cfg)
 
-	if option.IRC.Channel[0] != "#channel1" &&
-		option.IRC.Channel[1] != "#channel2" {
+	if option.IRC.Channels[0] != "#channel1" &&
+		option.IRC.Channels[1] != "#channel2" {
 		t.Error("Channels not set correctly!")
 	}
 
@@ -50,16 +49,15 @@ func TestConfigExample(t *testing.T) {
 	var option Options
 	cfg := `
 	[Server]
-	hostname = irc.example.org
+	hostname = "irc.example.org"
 	port = 9999
 	useTLS = true
 	skipVerify = false
 	[IRC]
-	nickname = perpetua-test
-	channel = test
-	channel = "#test1"
+	nickname = "perpetua-test"
+	channels = ["test", "#test1"]
 	[I18N]
-	lang = it
+	lang = "it"
 	`
 
 	option.ReadFromString(cfg)
@@ -84,8 +82,8 @@ func TestConfigExample(t *testing.T) {
 		t.Error("Bot nickname not set correctly!")
 	}
 
-	if option.IRC.Channel[0] != "#test" &&
-		option.IRC.Channel[1] != "#test1" {
+	if option.IRC.Channels[0] != "#test" &&
+		option.IRC.Channels[1] != "#test1" {
 		t.Error("Channels not set correctly!")
 	}
 
