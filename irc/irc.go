@@ -21,7 +21,7 @@ import (
 const version = "perpetua quote bot " + config.Version
 
 var connection *irc.Connection
-var options *config.Options
+var conf *config.Config
 var store *db.Store
 
 // Localizated quote and about tokens used to detect the kind of query for
@@ -55,16 +55,16 @@ func i18nKeyJoin(lang, key string) string {
 }
 
 func connect() {
-	connection = irc.IRC(options.IRC.Nickname, options.IRC.User)
+	connection = irc.IRC(conf.IRC.Nickname, conf.IRC.User)
 	connection.Version = version
-	connection.UseTLS = options.Server.UseTLS
-	if options.Server.SkipVerify == true {
+	connection.UseTLS = conf.Server.UseTLS
+	if conf.Server.SkipVerify == true {
 		connection.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	err := connection.Connect(fmt.Sprintf("%s:%d",
-		options.Server.Hostname,
-		options.Server.Port))
+		conf.Server.Hostname,
+		conf.Server.Port))
 
 	if err != nil {
 		log.Fatal(err)
@@ -78,7 +78,7 @@ func handleEvents() {
 }
 
 func doWelcome(event *irc.Event) {
-	for _, channel := range options.IRC.Channels {
+	for _, channel := range conf.IRC.Channels {
 		connection.Join(channel)
 		connection.Log.Println("Joined to " + channel)
 	}
@@ -87,7 +87,7 @@ func doWelcome(event *irc.Event) {
 func doJoin(event *irc.Event) {
 	channel := event.Arguments[0]
 
-	if event.Nick == options.IRC.Nickname {
+	if event.Nick == conf.IRC.Nickname {
 		connection.Privmsg(channel, "Hello! I'm "+version)
 	} else {
 		connection.Privmsg(channel,
@@ -102,7 +102,7 @@ func doPrivmsg(event *irc.Event) {
 	var quote string
 
 	// Don't speak in private!
-	if channel == options.IRC.Nickname {
+	if channel == conf.IRC.Nickname {
 		return
 	}
 	command, person, extra, argument := parseMessage(event.Message())
@@ -121,9 +121,9 @@ func doPrivmsg(event *irc.Event) {
 
 func parseMessage(message string) (command, person, extra, argument string) {
 	var names []string
-	lang := options.I18N.Lang
+	lang := conf.I18N.Lang
 
-	reArgument := regexp.MustCompile(options.IRC.Nickname +
+	reArgument := regexp.MustCompile(conf.IRC.Nickname +
 		`:?` +
 		`\s+` +
 		`(?P<command>` + i18nKeyJoin(lang, "quote") + `)` +
@@ -134,7 +134,7 @@ func parseMessage(message string) (command, person, extra, argument string) {
 		`(?:\s+)` +
 		`(?P<argument>[\w\s-'\p{Latin}]+)`)
 
-	re := regexp.MustCompile(options.IRC.Nickname +
+	re := regexp.MustCompile(conf.IRC.Nickname +
 		`:?` +
 		`\s+` +
 		`(?P<command>` + i18nKeyJoin(lang, "quote") + `)` +
@@ -158,8 +158,8 @@ func parseMessage(message string) (command, person, extra, argument string) {
 	return m["command"], m["person"], m["extra"], m["argument"]
 }
 
-func Client(opt *config.Options, db *db.Store) {
-	options = opt
+func Client(c *config.Config, db *db.Store) {
+	conf = c
 	store = db
 	connect()
 	handleEvents()

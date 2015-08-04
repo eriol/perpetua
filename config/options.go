@@ -26,8 +26,8 @@ var (
 	DATABASE_FILE = path.Join(BASE_DIR, "perpetua.sqlite3")
 )
 
-// Options is used to store data read from CONFIG_FILE or a string.
-type Options struct {
+// Config is used to store information about the configuration of the bot.
+type Config struct {
 	Server struct {
 		Hostname           string
 		Port               uint16
@@ -44,49 +44,49 @@ type Options struct {
 
 // Read configuration from file specified by configFile and use
 // the default config file CONFIG_FILE if configFile is empty.
-func (o *Options) Read(configFile string) {
+func (c *Config) Read(configFile string) {
 
 	if configFile == "" {
 		configFile = CONFIG_FILE
 	}
 
-	if _, err := toml.DecodeFile(configFile, o); err != nil {
+	if _, err := toml.DecodeFile(configFile, c); err != nil {
 		log.Fatal(err)
 	}
 
-	o.setDefaultValues()
+	c.setDefaultValues()
 }
 
 // Read configuration from string.
-func (o *Options) ReadFromString(config string) {
+func (c *Config) ReadFromString(config string) {
 
-	if _, err := toml.Decode(config, o); err != nil {
+	if _, err := toml.Decode(config, c); err != nil {
 		log.Fatal(err)
 	}
 
-	o.setDefaultValues()
+	c.setDefaultValues()
 }
 
 // Set default values for not provided entries.
-func (o *Options) setDefaultValues() {
+func (c *Config) setDefaultValues() {
 
-	if o.IRC.Nickname == "" {
-		o.IRC.Nickname = DEFAULT_NICKNAME
+	if c.IRC.Nickname == "" {
+		c.IRC.Nickname = DEFAULT_NICKNAME
 	}
-	if o.IRC.User == "" {
-		o.IRC.User = DEFAULT_USER
+	if c.IRC.User == "" {
+		c.IRC.User = DEFAULT_USER
 	}
 
-	if o.I18N.Lang == "" {
-		o.I18N.Lang = DEFAULT_LANG
+	if c.I18N.Lang == "" {
+		c.I18N.Lang = DEFAULT_LANG
 	}
 
 	// Add a # at the beginning of the channel name if it's not there yet.
-	for i, channel := range o.IRC.Channels {
+	for i, channel := range c.IRC.Channels {
 		if string(channel[0]) == "#" {
 			continue
 		} else {
-			o.IRC.Channels[i] = "#" + channel
+			c.IRC.Channels[i] = "#" + channel
 		}
 	}
 }

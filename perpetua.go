@@ -13,15 +13,15 @@ import (
 
 func main() {
 
-	var options config.Options
+	var conf config.Config
 	var store db.Store
 
 	// TODO add a command line option to specify a config file
-	options.Read("")
+	conf.Read("")
 
 	store.Open(config.DATABASE_FILE)
 	defer store.Close()
 
-	irc.Client(&options, &store)
+	irc.Client(&conf, &store)
 
 }

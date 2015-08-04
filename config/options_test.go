@@ -10,35 +10,34 @@ import "testing"
 // Check if default values are set correctly.
 func TestDefaultValues(t *testing.T) {
 
-	var option Options
+	var conf Config
 	cfg := ""
 
-	option.ReadFromString(cfg)
+	conf.ReadFromString(cfg)
 
-	if option.IRC.Nickname != DEFAULT_NICKNAME {
+	if conf.IRC.Nickname != DEFAULT_NICKNAME {
 		t.Error("Default nickname not set correctly!")
 	}
 
-	if option.IRC.User != DEFAULT_USER {
+	if conf.IRC.User != DEFAULT_USER {
 		t.Error("Default user not set correctly!")
 	}
 
-	if option.I18N.Lang != DEFAULT_LANG {
+	if conf.I18N.Lang != DEFAULT_LANG {
 		t.Error("Default language not set correctly!")
 	}
 }
 
 func TestChannels(t *testing.T) {
 
-	var option Options
+	var conf Config
 	cfg := `[IRC]
 	channels = ["channel1", "#channel2"]
 	`
 
-	option.ReadFromString(cfg)
+	conf.ReadFromString(cfg)
 
-	if option.IRC.Channels[0] != "#channel1" &&
-		option.IRC.Channels[1] != "#channel2" {
+	if conf.IRC.Channels[0] != "#channel1" && conf.IRC.Channels[1] != "#channel2" {
 		t.Error("Channels not set correctly!")
 	}
 
@@ -46,7 +45,7 @@ func TestChannels(t *testing.T) {
 
 func TestConfigExample(t *testing.T) {
 
-	var option Options
+	var conf Config
 	cfg := `
 	[Server]
 	hostname = "irc.example.org"
@@ -60,34 +59,34 @@ func TestConfigExample(t *testing.T) {
 	lang = "it"
 	`
 
-	option.ReadFromString(cfg)
+	conf.ReadFromString(cfg)
 
-	if option.Server.Hostname != "irc.example.org" {
+	if conf.Server.Hostname != "irc.example.org" {
 		t.Error("Server hostname not set correctly!")
 	}
 
-	if option.Server.Port != 9999 {
+	if conf.Server.Port != 9999 {
 		t.Error("Server port not set correctly!")
 	}
 
-	if option.Server.UseTLS != true {
+	if conf.Server.UseTLS != true {
 		t.Error("Option useTSL not set correctly!")
 	}
 
-	if option.Server.SkipVerify != false {
+	if conf.Server.SkipVerify != false {
 		t.Error("Option skipVerify not set correctly!")
 	}
 
-	if option.IRC.Nickname != "perpetua-test" {
+	if conf.IRC.Nickname != "perpetua-test" {
 		t.Error("Bot nickname not set correctly!")
 	}
 
-	if option.IRC.Channels[0] != "#test" &&
-		option.IRC.Channels[1] != "#test1" {
+	if conf.IRC.Channels[0] != "#test" &&
+		conf.IRC.Channels[1] != "#test1" {
 		t.Error("Channels not set correctly!")
 	}
 
-	if option.I18N.Lang != "it" {
+	if conf.I18N.Lang != "it" {
 		t.Error("Lang not set correctly!")
 	}
 }
