@@ -13,8 +13,10 @@ import (
 
 func main() {
 
-	var conf config.Config
-	var store db.Store
+	var (
+		conf  config.Config
+		store db.Store
+	)
 
 	// TODO add a command line option to specify a config file
 	conf.Read("")
