@@ -6,7 +6,6 @@
 package config // import "eriol.xyz/perpetua/config"
 
 import (
-	"log"
 	"os"
 	"path"
 
@@ -44,27 +43,31 @@ type Config struct {
 
 // Read configuration from file specified by configFile and use
 // the default config file CONFIG_FILE if configFile is empty.
-func (c *Config) Read(configFile string) {
+func (c *Config) Read(configFile string) (err error) {
 
 	if configFile == "" {
 		configFile = CONFIG_FILE
 	}
 
 	if _, err := toml.DecodeFile(configFile, c); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	c.setDefaultValues()
+
+	return nil
 }
 
 // Read configuration from string.
-func (c *Config) ReadFromString(config string) {
+func (c *Config) ReadFromString(config string) (err error) {
 
 	if _, err := toml.Decode(config, c); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	c.setDefaultValues()
+
+	return nil
 }
 
 // Set default values for not provided entries.

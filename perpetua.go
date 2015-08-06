@@ -6,6 +6,8 @@
 package main // import "eriol.xyz/perpetua"
 
 import (
+	"log"
+
 	"eriol.xyz/perpetua/config"
 	"eriol.xyz/perpetua/db"
 	"eriol.xyz/perpetua/irc"
@@ -19,7 +21,9 @@ func main() {
 	)
 
 	// TODO add a command line option to specify a config file
-	conf.Read("")
+	if err := conf.Read(""); err != nil {
+		log.Fatal(err)
+	}
 
 	store.Open(config.DATABASE_FILE)
 	defer store.Close()
