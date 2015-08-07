@@ -5,7 +5,11 @@
 
 package config
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 // Check if default values are set correctly.
 func TestDefaultValues(t *testing.T) {
@@ -89,4 +93,25 @@ func TestConfigExample(t *testing.T) {
 	if conf.I18N.Lang != "it" {
 		t.Error("Lang not set correctly!")
 	}
+}
+
+func TestBadConfig(t *testing.T) {
+
+	var conf Config
+	cfg := `
+	[Server]
+	hostname = "irc.example.org"
+	port = 9999
+	useTLS = true
+	skipVerify = false
+	[IRC]
+	nickname = "perpetua-test"
+	channels = ["test" "#test1"]
+	[I18N]
+	lang = "it"
+	`
+
+	err := conf.ReadFromString(cfg)
+
+	assert.NotNil(t, err)
 }
