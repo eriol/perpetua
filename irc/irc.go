@@ -7,8 +7,8 @@ package irc // import "eriol.xyz/perpetua/irc"
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
-	"log"
 	"regexp"
 	"strings"
 
@@ -20,7 +20,6 @@ import (
 
 const version = "perpetua quote bot " + config.Version
 
-var connection *irc.Connection
 var conf *config.Config
 var store *db.Store
 
@@ -54,7 +53,7 @@ func i18nKeyJoin(lang, key string) string {
 	return strings.Join(i18n[lang][key], "|")
 }
 
-func connect() {
+func connect() (connection *irc.Connection, err error) {
 	connection = irc.IRC(conf.IRC.Nickname, conf.IRC.User)
 	connection.Version = version
 	connection.UseTLS = conf.Server.UseTLS
@@ -62,19 +61,13 @@ func connect() {
 		connection.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
-	err := connection.Connect(fmt.Sprintf("%s:%d",
+	if err := connection.Connect(fmt.Sprintf("%s:%d",
 		conf.Server.Hostname,
-		conf.Server.Port))
-
-	if err != nil {
-		log.Fatal(err)
+		conf.Server.Port)); err != nil {
+		return nil, err
 	}
-}
 
-func handleEvents() {
-	connection.AddCallback("001", doWelcome)
-	connection.AddCallback("JOIN", doJoin)
-	connection.AddCallback("PRIVMSG", doPrivmsg)
+	return connection, nil
 }
 
 func doWelcome(event *irc.Event) {
@@ -158,10 +151,20 @@ func parseMessage(message string) (command, person, extra, argument string) {
 	return m["command"], m["person"], m["extra"], m["argument"]
 }
 
-func Client(c *config.Config, db *db.Store) {
+func Client(c *config.Config, db *db.Store) (err error) {
 	conf = c
 	store = db
-	connect()
-	handleEvents()
+
+	connection, err := connect()
+	if err != nil {
+		return errors.New("Can't connect")
+	}
+
+	connection.AddCallback("001", doWelcome)
+	connection.AddCallback("JOIN", doJoin)
+	connection.AddCallback("PRIVMSG", doPrivmsg)
+
 	connection.Loop()
+
+	return nil
 }
