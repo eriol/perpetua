@@ -20,8 +20,10 @@ import (
 
 const version = "perpetua quote bot " + config.Version
 
-var conf *config.Config
-var store *db.Store
+var (
+	conf  *config.Config
+	store *db.Store
+)
 
 // Localizated quote and about tokens used to detect the kind of query for
 // the bot.
