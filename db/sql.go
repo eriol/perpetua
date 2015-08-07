@@ -19,10 +19,11 @@ type Store struct {
 	db *sql.DB
 }
 
-func (s *Store) Open(database string) error {
+// Open SQLite3 database specified in database path.
+func (s *Store) Open(database string) (err error) {
 	db, err := sql.Open("sqlite3", database)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	s.db = db
 

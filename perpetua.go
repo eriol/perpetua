@@ -25,7 +25,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	store.Open(config.DATABASE_FILE)
+	if err := store.Open(config.DATABASE_FILE); err != nil {
+		log.Fatal(err)
+	}
 	defer store.Close()
 
 	irc.Client(&conf, &store)
