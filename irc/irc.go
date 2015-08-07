@@ -79,8 +79,8 @@ func handleEvents() {
 
 func doWelcome(event *irc.Event) {
 	for _, channel := range conf.IRC.Channels {
-		connection.Join(channel)
-		connection.Log.Println("Joined to " + channel)
+		event.Connection.Join(channel)
+		event.Connection.Log.Println("Joined to " + channel)
 	}
 }
 
@@ -88,9 +88,9 @@ func doJoin(event *irc.Event) {
 	channel := event.Arguments[0]
 
 	if event.Nick == conf.IRC.Nickname {
-		connection.Privmsg(channel, "Hello! I'm "+version)
+		event.Connection.Privmsg(channel, "Hello! I'm "+version)
 	} else {
-		connection.Privmsg(channel,
+		event.Connection.Privmsg(channel,
 			fmt.Sprintf("Hello %s! I'm %s. Do you want a quote?",
 				event.Nick,
 				version))
@@ -115,7 +115,7 @@ func doPrivmsg(event *irc.Event) {
 			quote = store.GetQuoteAbout(person, argument, channel)
 		}
 
-		connection.Privmsg(channel, quote)
+		event.Connection.Privmsg(channel, quote)
 	}
 }
 
