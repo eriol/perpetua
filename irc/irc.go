@@ -8,6 +8,7 @@ package irc // import "eriol.xyz/perpetua/irc"
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -152,14 +153,16 @@ func parseMessage(message string) (command, person, extra, argument string) {
 	return m["command"], m["person"], m["extra"], m["argument"]
 }
 
-func Client(c *config.Config, db *db.Store) (err error) {
+func Client(c *config.Config, db *db.Store, ircChan chan *irc.Connection, done chan bool) {
 	conf = c
 	store = db
 
 	connection, err := connect()
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
+
+	ircChan <- connection
 
 	connection.AddCallback("001", doWelcome)
 	connection.AddCallback("JOIN", doJoin)
@@ -167,5 +170,5 @@ func Client(c *config.Config, db *db.Store) (err error) {
 
 	connection.Loop()
 
-	return nil
+	done <- true
 }
