@@ -8,6 +8,8 @@ package main // import "eriol.xyz/perpetua"
 import (
 	"log"
 
+	"gopkg.in/alecthomas/kingpin.v2"
+
 	"eriol.xyz/perpetua/config"
 	"eriol.xyz/perpetua/db"
 	"eriol.xyz/perpetua/irc"
@@ -19,9 +21,15 @@ func main() {
 		conf  config.Config
 		store db.Store
 	)
+	var (
+		configFile = kingpin.Flag("config", "Configuration file path.").Short('c').Default("").String()
+	)
 
-	// TODO add a command line option to specify a config file
-	if err := conf.Read(""); err != nil {
+	kingpin.Version(config.Version)
+	kingpin.CommandLine.Help = "Quote bot for IRC."
+	kingpin.Parse()
+
+	if err := conf.Read(*configFile); err != nil {
 		log.Fatal(err)
 	}
 
