@@ -7,7 +7,6 @@ package irc // import "eriol.xyz/perpetua/irc"
 
 import (
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -159,7 +158,7 @@ func Client(c *config.Config, db *db.Store) (err error) {
 
 	connection, err := connect()
 	if err != nil {
-		return errors.New("Can't connect")
+		return err
 	}
 
 	connection.AddCallback("001", doWelcome)
