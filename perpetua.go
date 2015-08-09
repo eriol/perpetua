@@ -53,12 +53,13 @@ func main() {
 	log.Printf("Got signal %v, exiting now.\n", sig)
 
 	conn := <-ircChan
+	log.Printf("Quitting from %v.\n", conn.Server)
 	conn.Quit()
 
 	done := <-isDone
 
 	if done {
-		log.Println("Stopping...")
+		log.Println("Stopped.")
 	}
 
 }
