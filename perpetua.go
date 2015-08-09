@@ -47,7 +47,7 @@ func main() {
 	defer store.Close()
 
 	log.Println("Starting...")
-	go irc.Client(&conf, &store, ircChan, isDone)
+	go irc.NewClient(&conf, &store, ircChan, isDone)
 
 	sig := <-sigChan
 	log.Printf("Got signal %v, exiting now.\n", sig)

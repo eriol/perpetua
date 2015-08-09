@@ -153,7 +153,7 @@ func parseMessage(message string) (command, person, extra, argument string) {
 	return m["command"], m["person"], m["extra"], m["argument"]
 }
 
-func Client(c *config.Config, db *db.Store, ircChan chan *irc.Connection, done chan bool) {
+func NewClient(c *config.Config, db *db.Store, ircChan chan *irc.Connection, done chan bool) {
 	conf = c
 	store = db
 
