@@ -8,7 +8,6 @@ package db // import "eriol.xyz/perpetua/db"
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -29,7 +28,9 @@ func (s *Store) Open(database string) (err error) {
 
 	if _, err := os.Stat(database); err != nil {
 		if os.IsNotExist(err) {
-			s.createDatabase()
+			if err := s.createDatabase(); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -42,7 +43,7 @@ func (s *Store) Close() error {
 }
 
 // Create database tables.
-func (s *Store) createDatabase() {
+func (s *Store) createDatabase() error {
 
 	// quotes_acl table connects a quote with a specific channel so
 	// that the quote will be quoted only in that specific channel.
@@ -82,8 +83,10 @@ func (s *Store) createDatabase() {
 	_, err := s.db.Exec(tables)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
 func (s *Store) getPerson(name string) (id int) {
