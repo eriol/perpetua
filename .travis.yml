@@ -8,8 +8,13 @@ before_install:
   - mv $TRAVIS_BUILD_DIR $HOME/gopath/src/eriol.xyz/perpetua
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/eriol.xyz/perpetua
   - cd $TRAVIS_BUILD_DIR
+  - go get golang.org/x/tools/cmd/cover
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
-  - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+  - go get github.com/modocache/gover
 script:
-    - $HOME/gopath/bin/goveralls -v -service=travis-ci
+    - go test -coverprofile=config.coverprofile ./config
+    - go test -coverprofile=db.coverprofile ./db
+    - go test -coverprofile=irc.coverprofile ./irc
+    - $HOME/gopath/bin/gover
+    - $HOME/gopath/bin/goveralls -v -coverprofile=gover.coverprofile -service=travis-ci
