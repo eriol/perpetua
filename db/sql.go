@@ -41,6 +41,7 @@ func (s *Store) Close() error {
 	return s.db.Close()
 }
 
+// Create database tables.
 func (s *Store) createDatabase() {
 
 	// quotes_acl table connects a quote with a specific channel so
