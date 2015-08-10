@@ -36,8 +36,9 @@ func (s *Store) Open(database string) (err error) {
 	return nil
 }
 
-func (s *Store) Close() {
-	s.db.Close()
+// Close SQLite3 database used by Store.
+func (s *Store) Close() error {
+	return s.db.Close()
 }
 
 func (s *Store) createDatabase() {
