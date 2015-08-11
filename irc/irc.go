@@ -100,7 +100,7 @@ func doPrivmsg(event *irc.Event) {
 	if channel == conf.IRC.Nickname {
 		return
 	}
-	command, person, extra, argument := parseMessage(event.Message())
+	command, person, extra, argument := parseMessage(event.Message(), conf.I18N.Lang)
 
 	if command != "" && person != "" {
 
@@ -114,9 +114,8 @@ func doPrivmsg(event *irc.Event) {
 	}
 }
 
-func parseMessage(message string) (command, person, extra, argument string) {
+func parseMessage(message, lang string) (command, person, extra, argument string) {
 	var names []string
-	lang := conf.I18N.Lang
 
 	reArgument := regexp.MustCompile(conf.IRC.Nickname +
 		`:?` +
