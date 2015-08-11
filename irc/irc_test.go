@@ -5,26 +5,26 @@
 
 package irc
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestI18nKeyJoin(t *testing.T) {
 	var s string
 
 	s = i18nKeyJoin("en", "quote")
-	if s != "quote|what does it say" {
-		t.Fatal("quote key for en language error")
-	}
+	assert.Equal(t, s, "quote|what does it say", "quote key for en language error")
+
 	s = i18nKeyJoin("en", "about")
-	if s != "about" {
-		t.Fatal("about key for en language error")
-	}
+	assert.Equal(t, s, "about", "about key for en language error")
 
 	s = i18nKeyJoin("it", "quote")
-	if s != "cita|che dice|cosa dice|che cosa dice" {
-		t.Fatal("quote key for it language error")
-	}
+	assert.Equal(t, s, "cita|che dice|cosa dice|che cosa dice",
+		"quote key for it language error")
+
 	s = i18nKeyJoin("it", "about")
-	if s != "su|sul|sulla|sullo|sui|sugli|sulle" {
-		t.Fatal("about key for it language error")
-	}
+	assert.Equal(t, s, "su|sul|sulla|sullo|sui|sugli|sulle",
+		"quote key for it language error")
 }
