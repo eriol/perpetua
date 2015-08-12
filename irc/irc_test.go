@@ -31,3 +31,33 @@ func TestI18nKeyJoin(t *testing.T) {
 	assert.Equal(t, s, "su|sul|sulla|sullo|sui|sugli|sulle",
 		"quote key for it language error")
 }
+
+func TestParseMessageEmpty(t *testing.T) {
+	var message string
+
+	command, person, extra, argument := parseMessage(message, "it", "perpetua")
+	assert.Equal(t, command, "", "test empty command")
+	assert.Equal(t, person, "", "test empty person")
+	assert.Equal(t, extra, "", "test empty extra")
+	assert.Equal(t, argument, "", "test empty argument")
+}
+
+func TestParseMessageNoArgument(t *testing.T) {
+	message := "perpetua: cita Alan Turing"
+	command, person, extra, argument := parseMessage(message, "it", "perpetua")
+
+	assert.Equal(t, command, "cita", "parsed command")
+	assert.Equal(t, person, "Alan Turing", "parsed person")
+	assert.Equal(t, extra, "", "parsed extra")
+	assert.Equal(t, argument, "", "parsed argument")
+}
+
+func TestParseMessageArgument(t *testing.T) {
+	message := "perpetua: cita Alan Turing sui computer"
+	command, person, extra, argument := parseMessage(message, "it", "perpetua")
+
+	assert.Equal(t, command, "cita", "parsed command")
+	assert.Equal(t, person, "Alan Turing", "parsed person")
+	assert.Equal(t, extra, "sui", "parsed extra")
+	assert.Equal(t, argument, "computer", "parsed argument")
+}
