@@ -14,6 +14,9 @@ import (
 func TestI18nKeyJoin(t *testing.T) {
 	var s string
 
+	s = i18nKeyJoin("", "")
+	assert.Equal(t, s, "", "test empty strings")
+
 	s = i18nKeyJoin("en", "quote")
 	assert.Equal(t, s, "quote|what does it say", "quote key for en language error")
 

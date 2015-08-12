@@ -51,7 +51,11 @@ var i18n = map[string]map[string][]string{
 
 // Join keys from i18n using "|": used inside the regex to perform an
 // OR of all keys.
+// If both lang and key are empty strings an empty string is returned.
 func i18nKeyJoin(lang, key string) string {
+	if lang == "" && key == "" {
+		return ""
+	}
 	return strings.Join(i18n[lang][key], "|")
 }
 
